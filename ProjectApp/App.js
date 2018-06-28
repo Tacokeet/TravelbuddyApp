@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, } from 'react-native';
 
 import Header from './header/Header';
 import City from './city/City';
 import Places from './places/Places';
 import Modal from './modal/Modal';
+import Map from './map/Map';
 import User from './user/User'
 
 import logo from './images/logo.png';
@@ -26,6 +27,8 @@ export default class App extends React.Component {
             querySet: false,
             range: "5000",
             activeTab: 'home',
+            gpsCity: '',
+
         }
     }
 
@@ -54,6 +57,19 @@ export default class App extends React.Component {
     ]
 
     componentDidMount() {
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                this.setState({
+                    gpsLatitude: position.coords.latitude,
+                    gpsLongitude: position.coords.longitude,
+                    error: null,
+                });
+            },
+            (error) => this.setState({ error: error.message }),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+        );
+
         let proxy  = 'https://cors-anywhere.herokuapp.com/';
         fetch('http://api.ipstack.com/check?access_key=201a9fbb71fcb2b3195f6626795b5907')
             .then((response) => response.json())
@@ -71,15 +87,35 @@ export default class App extends React.Component {
                 }, function(){
 
                 });
+                if (this.state.gpsLongitude){
+                    this.setState({
+                        latitude: this.state.gpsLatitude,
+                        longitude: this.state.gpsLongitude
+                    })
+                }
                 let places = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='
                     + this.state.latitude + ',' + this.state.longitude;
                 this.setState({
                     query: places,
                     querySet: true
                 });
+
+                let locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ';
+                fetch(locationURL)
+                    .then((location) => location.json())
+                    .then((locationJson) => {
+                        this.setState({gpsCity: locationJson.results[0].address_components[3].long_name})
+                        if (this.state.gpsCity){
+                            this.setState({
+                                city: this.state.gpsCity
+                            })
+                        }
+                    });
+
             }).catch((error) => {
             console.error(error);
         });
+
     }
 
     handleClick = () => {
@@ -101,7 +137,13 @@ export default class App extends React.Component {
         this.setState({showModal: false})
     };
 
+
     render() {
+
+        <Map
+            latitude={this.state.latitude}
+            longitude={this.state.longitude}
+        />
 
         let viewModal = null;
         if(this.state.showModal){
@@ -173,6 +215,7 @@ export default class App extends React.Component {
                         region={this.state.regionName}
                         country={this.state.countryName}
                     />
+
                     <View style={styles.placesContainer}>
                         {this.state.categories.map((category,index) => {
                             return <Places

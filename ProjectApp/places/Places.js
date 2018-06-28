@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Modal } from 'react-native';
-
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Modal, Button, } from 'react-native';
+import Map from '../map/Map'
 import Carousel from 'react-native-snap-carousel';
 
 export default class Places extends React.Component {
@@ -24,6 +24,7 @@ export default class Places extends React.Component {
         this.newQuery()
     }
 
+
     newQuery() {
         let url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=Restaurants+in+Amsterdam&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E';
         fetch(this.query)
@@ -35,22 +36,30 @@ export default class Places extends React.Component {
                 }), function() {
 
                 }
+                console.warn(this.state.results[0].geometry.location.lat)
+                // console.warn(responseJson.results[0].geometry.location.lat)
+                // console.warn(responseJson.results[0].geometry.location.lng)
             })
             .catch((error) => {
                 console.error(error);
             });
+     // console.warn(this.state.results[0])
     }
-
     _renderItem ({item, index}) {
 
         let content = [];
         content.push(
             <View key={index}>
-                <TouchableOpacity style={styles.slide}>
+                <Text> </Text>
+                <TouchableOpacity style={styles.slide} >
                     <Image style={{width: 300, height: 250}} source={{uri: "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=" +
                         item.photos[0].photo_reference + "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E"}} />
                     <View style={styles.titleBox} >
                         <Text style={styles.title}>{ item.name }</Text>
+                        <Map
+                            // placesLat={this.state.results[{index}].geometry.location.lat}
+                            // placesLng={this.state.results[{index}].geometry.location.lng}
+                        />
                     </View>
                 </TouchableOpacity>
             </View>
@@ -83,7 +92,10 @@ export default class Places extends React.Component {
                     renderItem={this._renderItem}
                     sliderWidth={sliderWidth}
                     itemWidth={itemWidth}
+                    enableMomentum={true}
+
                 />
+
             </View>
         )
 

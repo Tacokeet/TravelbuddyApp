@@ -16,11 +16,11 @@ export default class City extends React.Component {
     }
 
     componentDidMount() {
-        this.wikiQuery()
+        this.wikiQuery();
     }
 
-    wikiQuery() {
-        let url = 'https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=kollum';
+     wikiQuery() {
+        let url = 'https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=' + this.props.city;
         fetch(url)
             .then((response) => response.json())
             .then((responseJson) => {
@@ -60,6 +60,7 @@ export default class City extends React.Component {
                     <Text style={styles.extraInfo}>Region: {this.props.region}</Text>
                     <Text style={styles.extraInfo}>Country: {this.props.country}</Text>
                 </View>
+
             </View>
         )
     }
@@ -104,6 +105,4 @@ const styles = StyleSheet.create({
         marginBottom: 30
     }
 });
-
-
 

@@ -10,7 +10,7 @@ export default class Modal extends React.Component {
 
     render() {
         return(
-                <Text>TestAAAAAAAAA</Text>
+                <Text>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</Text>
             )
     }
 
