@@ -16,8 +16,13 @@ export default class City extends React.Component {
 
     }
 
-    componentDidMount() {
-        this.wikiQuery()
+    componentDidUpdate() {
+        if (this.state.city !== this.props.city){
+            this.wikiQuery()
+            this.setState({
+                city: this.props.city,
+            })
+        }
     }
 
     wikiQuery() {
