@@ -191,8 +191,25 @@ class App extends React.Component {
             modalLat: lat,
             modalLng: lng,
             modalId: id,
-        })
+        });
 
+        let modal = null;
+        modal = <Modal
+            click={this.hideModal}
+            image = {this.state.modalImage}
+            name = {this.state.modalName}
+            address={this.state.modalAddress}
+            open = {this.state.modalOpen}
+            lat = {this.state.modalLat}
+            lng = {this.state.modalLng}
+            id = {this.state.modalId}
+            latitude = {this.state.latitude}
+            longitude = {this.state.longitude}
+            currentLat = {this.state.latitude}
+            currentLng = {this.state.longitude}
+        />;
+
+        this.setModal('modal')
     };
 
     hideModal = () => {
@@ -268,21 +285,7 @@ class App extends React.Component {
             longitude={this.state.longitude}
         />;
 
-        let modal = null;
-        modal = <Modal
-            click={this.hideModal}
-            image = {this.state.modalImage}
-            name = {this.state.modalName}
-            address={this.state.modalAddress}
-            open = {this.state.modalOpen}
-            lat = {this.state.modalLat}
-            lng = {this.state.modalLng}
-            id = {this.state.modalId}
-            latitude = {this.state.latitude}
-            longitude = {this.state.longitude}
-            currentLat = {this.state.latitude}
-            currentLng = {this.state.longitude}
-        />;
+
 
         let viewModal = null;
         if(this.state.showModal){
@@ -369,6 +372,7 @@ class App extends React.Component {
                             />
                         })}
                     </View>
+
                 </View>
 
             )
