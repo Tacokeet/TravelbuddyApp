@@ -1,36 +1,89 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 
 import Header from './header/Header';
 import City from './city/City';
 import Places from './places/Places';
 import Modal from './modal/Modal';
-import Map from './map/Map';
 import User from './user/User'
+import Login from './login/Login'
+import Search from './search/Search'
 
+import axios from 'axios';
 import logo from './images/logo.png';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BottomNavigation, {
     FullTab
 } from 'react-native-material-bottom-navigation'
+import Map from "./map/Map";
 
 
-export default class App extends React.Component {
+class App extends React.Component {
+    state = {
+        results: [],
+        categories: ['Bar'],
+        querySet: false,
+        range: "5000",
+        activeTab: 'home',
+        username: "",
+        loggedIn: false,
+        loginStatus: "Not logged in",
+    }
 
     constructor(props) {
         super(props)
 
-        this.state = {
-            results: [],
-            categories: ["restaurant", "bar"],
-            querySet: false,
-            range: "5000",
-            activeTab: 'home',
-            gpsCity: '',
+        fetch('http://10.0.2.2:5000/api/loginCheck')
+            .then((response) => response.json())
+            .then((responseJson)=> {
+                if (responseJson['username'] != null) {
+                    this.setState({
+                        username: responseJson['username'],
+                        loggedIn: true,
+                    })
+                }
+                if(this.state.loggedIn) {
+                    let url = "http://10.0.2.2:5000/api/user/preferences";
+                    axios.get(url)
+                        .then(response => {
+                                if(response.data) {
+                                    if(JSON.stringify(response.data) === '{}') {
+                                        this.setDefaultCategories();
+                                    }
+                                    else {
+                                        let temp = [];
+                                        for (var key in response.data) {
+                                            temp.push(key)
+                                        }
+                                        this.setState({
+                                            categories: temp
+                                        })
+                                    }
+                                }
+                                else {
+                                    this.setState({
+                                        categories: ['restaurant', 'bar']
+                                    })
 
-        }
+                                }
+                            });
+                } else {
+                    this.setState({
+                        categories: ['restaurant', 'bar']
+                    })
+                }
+            }).catch((error) => {
+            console.log(error)
+        })
     }
+
+    setDefaultCategories() {
+        this.setState({
+            categories: ['restaurant', 'bar']
+        })
+    }
+
 
     tabs = [
         {
@@ -41,22 +94,23 @@ export default class App extends React.Component {
             pressColor: 'rgba(255, 255, 255, 0.16)'
         },
         {
-            key: 'profile',
-            icon: 'user',
-            label: 'Profile',
+            key: 'search',
+            icon: 'search',
+            label: 'Search',
             barColor: '#ff922b',
             pressColor: 'rgba(255, 255, 255, 0.16)'
         },
         {
             key: 'login',
-            icon: 'sign-in',
-            label: 'Login',
+            icon: 'user',
+            label: "Profile",
             barColor: '#ff922b',
             pressColor: 'rgba(255, 255, 255, 0.16)'
         }
     ]
 
     componentDidMount() {
+
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -137,13 +191,80 @@ export default class App extends React.Component {
         this.setState({showModal: false})
     };
 
+    setStatus = (status) => {
+        if (status === "Uitloggen") {
+            this.setState({
+                loginStatus: "home",
+                activeTab: "home",
+                categories: ["restaurant", "bar"],
+                loggedIn: false,
+            })
+        } else {
+            this.setState({
+                loginStatus: "Logged in",
+                activeTab: "profile",
+                loggedIn: true,
+            })
+            this.getUserCategories()
+        }
+    };
+
+    setModal = (modalStatus) => {
+        if (modalStatus === "modal") {
+            this.setState({
+                activeTab: "modal",
+            })
+        } else {
+            this.setState({
+                activeTab: "home",
+            })
+        }
+    };
+
+
+    getUserCategories() {
+        let url = "http://10.0.2.2:5000/api/user/preferences";
+        axios.get(url)
+            .then(response => {
+                let temp = [];
+                for (var key in response.data) {
+                    temp.push(key)
+                }
+                this.setState({
+                    categories: temp
+                })
+
+            });
+    }
+
+    compareCategories(preference, currentCategories) {
+        let temp = [];
+        let inArray = 0;
+        for (var i = 0; i < currentCategories.length; i++) {
+            if (currentCategories[i] == preference) {
+                currentCategories.splice(i, 1)
+                inArray++;
+            }
+        }
+        if (inArray === 0) {
+            currentCategories.push(preference)
+        }
+    }
 
     render() {
 
-        <Map
+        let map = null;
+        map = <Map
+            piet={this.state.range}
             latitude={this.state.latitude}
             longitude={this.state.longitude}
-        />
+        />;
+
+        let modal = null;
+        modal = <Modal
+            latitude={this.state.latitude}
+            longitude={this.state.longitude}
+        />;
 
         let viewModal = null;
         if(this.state.showModal){
@@ -186,7 +307,7 @@ export default class App extends React.Component {
             <View style={{flex: 1}}>
                 <ScrollView>
                     <View>
-                        <Header />
+                        <Header status={this.state.loginStatus} />
                         {this.renderScreen()}
                     </View>
                 </ScrollView>
@@ -202,12 +323,15 @@ export default class App extends React.Component {
     }
 
     renderScreen = () => {
-        if (this.state.activeTab == 'home') {
+        if (this.state.activeTab === 'home') {
+
+
             return (
                 <View>
                     <View style={styles.logo}>
                         <Image source={logo}/>
                     </View>
+
                     <City
                         city={this.state.city}
                         wikitext={this.state.text}
@@ -215,10 +339,10 @@ export default class App extends React.Component {
                         region={this.state.regionName}
                         country={this.state.countryName}
                     />
-
                     <View style={styles.placesContainer}>
                         {this.state.categories.map((category,index) => {
                             return <Places
+                                func={this.setModal}
                                 cat={category}
                                 query={this.state.query}
                                 key={index}
@@ -227,10 +351,20 @@ export default class App extends React.Component {
                     </View>
                 </View>
             )
-        } else if (this.state.activeTab == 'profile') {
-            return <User />
-        } else if (this.state.activeTab == 'login') {
-            return <Text>Dit is de login page</Text>
+        } else if (this.state.activeTab === 'profile') {
+            return <User func={this.setStatus} compare={this.compareCategories} cat={this.state.categories}/>
+        } else if (this.state.activeTab === 'login') {
+            if (!this.state.loggedIn) {
+                return <Login func={this.setStatus} />
+            } else {
+                return <User func={this.setStatus} compare={this.compareCategories} cat={this.state.categories} />
+            }
+        } else if (this.state.activeTab === 'search') {
+            return <Search />
+        } else if (this.state.activeTab === 'map') {
+            return <Map />
+        } else if (this.state.activeTab === 'modal') {
+            return <Modal />
         }
 
     }
@@ -263,3 +397,5 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
 });
+
+export default App;

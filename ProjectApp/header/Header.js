@@ -22,18 +22,51 @@ export default class Header extends React.Component {
         super(props);
 
         this.state = {
-                name: 'Welcome Pascal',
-                avatar: '',
-                check: false
+            name: 'Not logged in',
+            loginStatus: "Not logged in",
+            welcome: "",
+            avatar: '',
+            check: false,
+        }
+        this.loginCheck()
+    }
+
+    loginCheck() {
+        fetch('http://10.0.2.2:5000/api/loginCheck')
+            .then((response) => response.json())
+            .then((responseJson)=> {
+                if (responseJson['username'] != null) {
+                    this.setState({
+                        name: responseJson['username'],
+                        welcome: "Welcome "
+                    })
+                } else {
+                    this.setState({
+                        name: "Not logged in",
+                        welcome: "",
+                    })
+                }
+            }).catch((error) => {
+            console.log(error)
+        })
+    }
+
+    componentDidUpdate() {
+        if (this.state.loginStatus !== this.props.status) {
+            this.loginCheck()
+            this.setState({
+                loginStatus: this.props.status,
+            })
         }
     }
+
 
     render() {
         return (
             <View>
                 <View style={styles.container}>
                     <View style={styles.half}>
-                        <Text>{this.state.name}</Text>
+                        <Text>{this.state.welcome + this.state.name}</Text>
                     </View>
                     <Menu
                         style={styles.half}

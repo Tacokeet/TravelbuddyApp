@@ -2,9 +2,10 @@ import React from 'react';
 import { View, StyleSheet, TouchableHighlight, Text } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import MaskTabBar from 'react-native-scrollable-tab-view-mask-bar';
-import Preferences from '../tab/Preferences';
-import Settings from '../tab/Settings';
-import Favorites from '../tab/Favorites';
+import Favorites from '../tab/favorites/Favorites';
+import Settings from '../tab/settings/Settings';
+import Preferences from '../tab/preferences/Preferences';
+import Logout from '../tab/logout/Logout';
 
 export default class User extends React.Component {
 
@@ -33,10 +34,11 @@ export default class User extends React.Component {
                         underlineStyle={tabUnderlineStyle}
                         backgroundColor={"#495057"}
                         showMask={false} maskMode='light' />}>
-                    <Preferences tabLabel="Preferences" index={0}/>
+                    <Preferences tabLabel="Preferences" index={0} compare={this.props.compare} cat={this.props.cat}/>
                     <Favorites tabLabel="Favorites" index={1}/>
                     <Settings tabLabel="Settings" index={2}/>
-                    <Preferences tabLabel="Friends" index={3}/>
+                    <Favorites tabLabel="Friends" index={3}/>
+                    <Logout tabLabel="Logout" index={3} function={this.props.func}/>
                 </ScrollableTabView>
             </View>
             )
@@ -48,7 +50,7 @@ export default class User extends React.Component {
 const styles = StyleSheet.create({
     tabContainer: {
        position: 'relative',
-       minHeight: 1000,
+       minHeight: 750,
     },
 });
 

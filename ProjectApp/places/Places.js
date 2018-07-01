@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Modal, Button, } from 'react-native';
-import Map from '../map/Map'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Button} from 'react-native';
+import Modal from '../modal/Modal';
+
 import Carousel from 'react-native-snap-carousel';
 
 export default class Places extends React.Component {
@@ -11,7 +12,9 @@ export default class Places extends React.Component {
         this.state ={
             isLoading: true,
             results: [],
-        }
+        };
+
+
     }
 
     baseUrl = "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=";
@@ -36,37 +39,46 @@ export default class Places extends React.Component {
                 }), function() {
 
                 }
-                console.warn(this.state.results[0].geometry.location.lat)
-                // console.warn(responseJson.results[0].geometry.location.lat)
-                // console.warn(responseJson.results[0].geometry.location.lng)
             })
             .catch((error) => {
                 console.error(error);
             });
-     // console.warn(this.state.results[0])
     }
-    _renderItem ({item, index}) {
+
+
+    _onPressCarousel = () => {
+
+        let viewModal = null;
+
+            viewModal = <Modal
+                result={this.state.results}
+            />
+
+
+        this.props.func("modal");
+
+    }
+
+
+    _renderItem  = ({item, index}) => {
 
         let content = [];
+        item.photos != null  &&
         content.push(
             <View key={index}>
-                <Text> </Text>
-                <TouchableOpacity style={styles.slide} >
+                <TouchableOpacity style={styles.slide} onPress={this._onPressCarousel}>
                     <Image style={{width: 300, height: 250}} source={{uri: "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=" +
                         item.photos[0].photo_reference + "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E"}} />
                     <View style={styles.titleBox} >
                         <Text style={styles.title}>{ item.name }</Text>
-                        <Map
-                            // placesLat={this.state.results[{index}].geometry.location.lat}
-                            // placesLng={this.state.results[{index}].geometry.location.lng}
-                        />
+                        <Text>{index}</Text>
                     </View>
                 </TouchableOpacity>
+
             </View>
         );
         return content;
     }
-
 
     render() {
 
@@ -75,6 +87,7 @@ export default class Places extends React.Component {
                 <View style={{flex: 1, padding: 20}}>
                     <Text>De gegevens worden opgehaald.</Text>
                     <Text>{this.state.results.length}</Text>
+
                 </View>
             )
         }
@@ -82,7 +95,10 @@ export default class Places extends React.Component {
         let sliderWidth = 350;
         let itemWidth = 280;
 
+
+
         return(
+
             <View style={{flex: 1, paddingTop:20}}>
                 <Text>{this.state.modal}</Text>
                 <Text style={styles.categoryTitle}>{this.props.cat.split('_').join(' ')}</Text>
@@ -92,8 +108,6 @@ export default class Places extends React.Component {
                     renderItem={this._renderItem}
                     sliderWidth={sliderWidth}
                     itemWidth={itemWidth}
-                    enableMomentum={true}
-
                 />
 
             </View>

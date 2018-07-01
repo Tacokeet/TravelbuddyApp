@@ -37,12 +37,13 @@ export default class Map extends React.Component {
     }
 
     render() {
-        return(
+        return (
             <View>
-                    <Button onPress={this.handleGetDirections} title="Get Directions" />
+                <Button onPress={this.handleGetDirections} title="Get Directions"/>
+                <Text>{this.props.latitude}</Text>
             </View>
 
         )
     }
-
 }
+

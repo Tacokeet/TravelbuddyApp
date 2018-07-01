@@ -1,17 +1,33 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Button, } from 'react-native';
+import Map from "../map/Map";
 
 
 export default class Modal extends React.Component {
 
     constructor(props) {
         super(props);
+
+
     }
 
     render() {
         return(
-                <Text>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</Text>
-            )
+            <View>
+                <Text>Here should text from the modal click on in the carousel</Text>
+                <Map/>
+
+            </View>
+
+    )
     }
 
 }
+
+
+
+
+
+
+
+

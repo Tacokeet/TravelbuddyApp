@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
 import background from '../images/sevilla.jpg';
+import App from "../App";
 
 export default class City extends React.Component {
 
@@ -16,10 +17,10 @@ export default class City extends React.Component {
     }
 
     componentDidMount() {
-        this.wikiQuery();
+        this.wikiQuery()
     }
 
-     wikiQuery() {
+    wikiQuery() {
         let url = 'https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=' + this.props.city;
         fetch(url)
             .then((response) => response.json())
@@ -60,7 +61,6 @@ export default class City extends React.Component {
                     <Text style={styles.extraInfo}>Region: {this.props.region}</Text>
                     <Text style={styles.extraInfo}>Country: {this.props.country}</Text>
                 </View>
-
             </View>
         )
     }
@@ -105,4 +105,6 @@ const styles = StyleSheet.create({
         marginBottom: 30
     }
 });
+
+
 
