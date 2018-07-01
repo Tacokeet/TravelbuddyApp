@@ -179,13 +179,19 @@ class App extends React.Component {
     };
 
 
-    modalHandler = (name) => {
+
+    modalHandler = (name, image, address, open, lat, lng, id) => {
         this.setState({
             showModal: true,
             modalName: name,
+            modalImage: image,
+            modalAddress: address,
+            modalOpen: open,
+            modalLat: lat,
+            modalLng: lng,
+            modalId: id,
         })
-    }
-
+    };
 
     hideModal = () => {
         this.setState({showModal: false})
@@ -293,6 +299,7 @@ class App extends React.Component {
                             <City
                                 city={this.state.city}
                                 wikitext={this.state.text}
+                                country_flag={this.state.countryFlag}
                                 callingCode={this.state.callingCode}
                                 region={this.state.regionName}
                                 country={this.state.countryName}
@@ -335,13 +342,16 @@ class App extends React.Component {
                     <City
                         city={this.state.city}
                         wikitext={this.state.text}
+                        country_flag={this.state.countryFlag}
                         callingCode={this.state.callingCode}
                         region={this.state.regionName}
                         country={this.state.countryName}
                     />
+
                     <View style={styles.placesContainer}>
                         {this.state.categories.map((category,index) => {
                             return <Places
+                                modalHandler={this.modalHandler}
                                 func={this.setModal}
                                 cat={category}
                                 query={this.state.query}

@@ -16,8 +16,12 @@ export default class City extends React.Component {
 
     }
 
+    componentDidMount(){
+        this.wikiQuery()
+    }
+
     componentDidUpdate() {
-        if (this.state.city !== this.props.city){
+        if (this.state.city !== this.props.city) {
             this.wikiQuery()
             this.setState({
                 city: this.props.city,
@@ -77,8 +81,8 @@ const styles = StyleSheet.create({
         position: 'relative',
         flexDirection: 'row',
         flexWrap:'wrap',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+        alignItems: 'center',
         flex: 1,
         overflow: 'hidden'
     },

@@ -12,11 +12,22 @@ export default class Modal extends React.Component {
     }
 
     render() {
+
+        let open = "Closed"
+        if (this.props.open) {
+            open = "Open now"
+        }
+
         return(
             <View>
                 <Text>Here should text from the modal click on in the carousel</Text>
-                <Map/>
 
+
+                <Text>{this.props.image}</Text>
+                <Text>{this.props.name}</Text>
+                <Text>{this.props.address}</Text>
+                <Text>{open}</Text>
+                <Map/>
             </View>
 
     )

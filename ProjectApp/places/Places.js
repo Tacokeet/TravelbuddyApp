@@ -46,13 +46,9 @@ export default class Places extends React.Component {
     }
 
 
+
+
     _onPressCarousel = () => {
-
-        let viewModal = null;
-
-            viewModal = <Modal
-                result={this.state.results}
-            />
 
 
         this.props.func("modal");
@@ -66,19 +62,25 @@ export default class Places extends React.Component {
         item.photos != null  &&
         content.push(
             <View key={index}>
+                <Text>{index}</Text>
                 <TouchableOpacity style={styles.slide} onPress={this._onPressCarousel}>
                     <Image style={{width: 300, height: 250}} source={{uri: "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=" +
                         item.photos[0].photo_reference + "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E"}} />
                     <View style={styles.titleBox} >
                         <Text style={styles.title}>{ item.name }</Text>
-                        <Text>{index}</Text>
                     </View>
                 </TouchableOpacity>
 
+                <Text>{ item.name }</Text>
+                <Text>{ item.geometry.location.lat }</Text>
+                <Text>{ item.geometry.location.lng }</Text>
+                <Text>{ item.place_id}</Text>
             </View>
         );
         return content;
     }
+
+
 
     render() {
 
