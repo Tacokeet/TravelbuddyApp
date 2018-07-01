@@ -18,8 +18,8 @@ export default class Map extends React.Component {
                 longitude: this.props.longitude
             },
             destination: {
-                latitude: 53.224064,
-                longitude: 6.555737
+                latitude: this.props.destLat,
+                longitude: this.props.destLng
             },
             params: [
                 {
@@ -40,7 +40,6 @@ export default class Map extends React.Component {
         return (
             <View>
                 <Button onPress={this.handleGetDirections} title="Get Directions"/>
-                <Text>{this.props.latitude}</Text>
             </View>
 
         )

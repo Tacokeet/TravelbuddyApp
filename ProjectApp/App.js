@@ -181,6 +181,7 @@ class App extends React.Component {
 
 
     modalHandler = (name, image, address, open, lat, lng, id) => {
+        console.log('modalHandler Clicked')
         this.setState({
             showModal: true,
             modalName: name,
@@ -191,6 +192,7 @@ class App extends React.Component {
             modalLng: lng,
             modalId: id,
         })
+
     };
 
     hideModal = () => {
@@ -268,8 +270,18 @@ class App extends React.Component {
 
         let modal = null;
         modal = <Modal
-            latitude={this.state.latitude}
-            longitude={this.state.longitude}
+            click={this.hideModal}
+            image = {this.state.modalImage}
+            name = {this.state.modalName}
+            address={this.state.modalAddress}
+            open = {this.state.modalOpen}
+            lat = {this.state.modalLat}
+            lng = {this.state.modalLng}
+            id = {this.state.modalId}
+            latitude = {this.state.latitude}
+            longitude = {this.state.longitude}
+            currentLat = {this.state.latitude}
+            currentLng = {this.state.longitude}
         />;
 
         let viewModal = null;
@@ -338,7 +350,6 @@ class App extends React.Component {
                     <View style={styles.logo}>
                         <Image source={logo}/>
                     </View>
-
                     <City
                         city={this.state.city}
                         wikitext={this.state.text}
@@ -347,7 +358,6 @@ class App extends React.Component {
                         region={this.state.regionName}
                         country={this.state.countryName}
                     />
-
                     <View style={styles.placesContainer}>
                         {this.state.categories.map((category,index) => {
                             return <Places
@@ -360,6 +370,7 @@ class App extends React.Component {
                         })}
                     </View>
                 </View>
+
             )
         } else if (this.state.activeTab === 'profile') {
             return <User func={this.setStatus} compare={this.compareCategories} cat={this.state.categories}/>
@@ -381,12 +392,14 @@ class App extends React.Component {
 
     renderTab = ({ tab, isActive }) => {
         return (
+
             <FullTab
                 key={tab.key}
                 isActive={isActive}
                 label={tab.label}
                 renderIcon={this.renderIcon(tab.icon)}
             />
+
         )
     }
 

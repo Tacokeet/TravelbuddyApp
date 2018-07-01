@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Button} from 'r
 import Modal from '../modal/Modal';
 
 import Carousel from 'react-native-snap-carousel';
+import Map from "../map/Map";
 
 export default class Places extends React.Component {
 
@@ -59,19 +60,38 @@ export default class Places extends React.Component {
     _renderItem  = ({item, index}) => {
 
         let content = [];
+        var image = 'IMAGE';
+        var open = 'true';
+        var place_id = 1;
         item.photos != null  &&
         content.push(
             <View key={index}>
                 <Text>{index}</Text>
-                <TouchableOpacity style={styles.slide} onPress={this._onPressCarousel}>
+                <TouchableOpacity style={styles.slide} onPress={this._onPressCarousel }>
                     <Image style={{width: 300, height: 250}} source={{uri: "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=" +
                         item.photos[0].photo_reference + "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E"}} />
                     <View style={styles.titleBox} >
                         <Text style={styles.title}>{ item.name }</Text>
                     </View>
                 </TouchableOpacity>
+                <Map
+                    destLat={item.geometry.location.lat}
+                    destLng={item.geometry.location.lng}
+                />
+                <Button title={'Send Items'} color={'#ff1165'} onPress={() => {this.props.modalHandler(
+                    item.name,
+                    image,
+                    item.vicinity,
+                    open,
+                    item.geometry.location.lat,
+                    item.geometry.location.lng,
+                    item.place_id,
+                )}}>More</Button>
 
                 <Text>{ item.name }</Text>
+                <Text>{ image }</Text>
+                <Text>{ item.vicinity }</Text>
+                <Text>{ open }</Text>
                 <Text>{ item.geometry.location.lat }</Text>
                 <Text>{ item.geometry.location.lng }</Text>
                 <Text>{ item.place_id}</Text>

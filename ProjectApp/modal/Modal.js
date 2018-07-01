@@ -27,6 +27,8 @@ export default class Modal extends React.Component {
                 <Text>{this.props.name}</Text>
                 <Text>{this.props.address}</Text>
                 <Text>{open}</Text>
+                <Text>{this.props.lat}</Text>
+                <Text>{this.props.lng}</Text>
                 <Map/>
             </View>
 
